@@ -12,24 +12,30 @@
 		typeof define === 'function' && define.amd ? define(factory) :
 			(global.Vue = factory());
 }(this, function () { 'use strict';
-  /* Vue构造函数  */
-
+/* Vue构造函数  */
+//定义常用的方法和常亮
+	//定义空对象
   var emptyObject = Object.freeze({});
 
   // These helpers produce better VM code in JS engines due to their
   // explicitness and function inlining.
+	
+	//定义方法 判断是否为 undefined或者null
   function isUndef (v) {
     return v === undefined || v === null
   }
-
+  
+	//定义方法  判断不是undefined也不是null
   function isDef (v) {
     return v !== undefined && v !== null
   }
 
+  //定义方法  判断是否为true
   function isTrue (v) {
     return v === true
   }
-
+	
+	//定义方法判断是否为false
   function isFalse (v) {
     return v === false
   }
@@ -37,6 +43,8 @@
   /**
    * Check if value is primitive.
    */
+
+  //定义方法 判断是否为基本类型   除null和undefined
   function isPrimitive (value) {
     return (
       typeof value === 'string' ||
@@ -52,6 +60,8 @@
    * Objects from primitive values when we know the value
    * is a JSON-compliant type.
    */
+
+  //定义方法判断是否为对象  由于typeof null为 object---所以加了判断
   function isObject (obj) {
     return obj !== null && typeof obj === 'object'
   }
@@ -59,8 +69,11 @@
   /**
    * Get the raw type string of a value, e.g., [object Object].
    */
+  
+  //将对象原型上的toString方法抽离出来call调用，预防原型上方法被改写
+	 
   var _toString = Object.prototype.toString;
-
+  //定义方法---判断类型
   function toRawType (value) {
     return _toString.call(value).slice(8, -1)
   }
@@ -69,10 +82,11 @@
    * Strict object type check. Only returns true
    * for plain JavaScript objects.
    */
+  //定义方法--判断是否为纯粹的对象 因为数组也是对象
   function isPlainObject (obj) {
     return _toString.call(obj) === '[object Object]'
   }
-
+//定义方法--判断是否为正则对象
   function isRegExp (v) {
     return _toString.call(v) === '[object RegExp]'
   }
@@ -80,11 +94,13 @@
   /**
    * Check if val is a valid array index.
    */
+  // 判断是否为可用的数组下标------isFinite判断是否为有限数
   function isValidArrayIndex (val) {
     var n = parseFloat(String(val));
     return n >= 0 && Math.floor(n) === n && isFinite(val)
   }
 
+  // 判断是否为promise
   function isPromise (val) {
     return (
       isDef(val) &&
@@ -108,6 +124,7 @@
    * Convert an input value to a number for persistence.
    * If the conversion fails, return original string.
    */
+  //定义函数  转数字 如果转换失败 返回原始字符串
   function toNumber (val) {
     var n = parseFloat(val);
     return isNaN(n) ? val : n
@@ -117,6 +134,8 @@
    * Make a map and return a function for checking if a key
    * is in that map.
    */
+  //定义一个函数  返回一个方法  用于判断是否在所列的字符串中  用法见 isBuiltInTag
+        //第二个参数表示是否区分大小写
   function makeMap (
     str,
     expectsLowerCase
@@ -134,16 +153,19 @@
   /**
    * Check if a tag is a built-in tag.
    */
+  //构建函数  判断一个标签是否是内嵌的标签
   var isBuiltInTag = makeMap('slot,component', true);
 
   /**
    * Check if an attribute is a reserved attribute.
    */
+  //构建函数  判断是否为保留属性
   var isReservedAttribute = makeMap('key,ref,slot,slot-scope,is');
 
   /**
    * Remove an item from an array.
    */
+  //构建函数从数组中移除一项
   function remove (arr, item) {
     if (arr.length) {
       var index = arr.indexOf(item);
@@ -157,6 +179,8 @@
    * Check whether an object has the property.
    */
   var hasOwnProperty = Object.prototype.hasOwnProperty;
+  
+  //创建函数  检测是否为对象私有属性
   function hasOwn (obj, key) {
     return hasOwnProperty.call(obj, key)
   }
@@ -164,6 +188,9 @@
   /**
    * Create a cached version of a pure function.
    */
+  //对纯函数做一个缓存
+  // 因为一个纯函数的返回值只跟它的参数有关，所以我们可以将入参作为key，返回值作为value缓存成key-value的键值对，
+  // 这样如果之后还想获取之前同样参数的计算结果时，不需要再重新计算了，直接获取之前计算过的结果就行。
   function cached (fn) {
     var cache = Object.create(null);
     return (function cachedFn (str) {
@@ -176,6 +203,7 @@
    * Camelize a hyphen-delimited string.
    */
   var camelizeRE = /-(\w)/g;
+  // 将连字符-连接的字符串转化成驼峰标识的字符串
   var camelize = cached(function (str) {
     return str.replace(camelizeRE, function (_, c) { return c ? c.toUpperCase() : ''; })
   });
@@ -183,6 +211,7 @@
   /**
    * Capitalize a string.
    */
+  // 将一个字符串的首字母大写后返回，也是可以被缓存的函数。
   var capitalize = cached(function (str) {
     return str.charAt(0).toUpperCase() + str.slice(1)
   });
@@ -190,6 +219,7 @@
   /**
    * Hyphenate a camelCase string.
    */
+  // 将一个驼峰标识的字符串转换成连字符-连接的字符串
   var hyphenateRE = /\B([A-Z])/g;
   var hyphenate = cached(function (str) {
     return str.replace(hyphenateRE, '-$1').toLowerCase()
@@ -204,6 +234,7 @@
    */
 
   /* istanbul ignore next */
+  // 增加bind的浏览器兼容性
   function polyfillBind (fn, ctx) {
     function boundFn (a) {
       var l = arguments.length;
@@ -218,6 +249,7 @@
     return boundFn
   }
 
+  //原生的bind
   function nativeBind (fn, ctx) {
     return fn.bind(ctx)
   }
@@ -229,6 +261,7 @@
   /**
    * Convert an Array-like object to a real Array.
    */
+  // 将类数组的对象转换成一个真正的数组。实际上就是一个元素逐一复制到另一个数组的过程。
   function toArray (list, start) {
     start = start || 0;
     var i = list.length - start;
@@ -242,6 +275,7 @@
   /**
    * Mix properties into target object.
    */
+  // 将属性混入到目标对象中，返回被增强的目标对象。
   function extend (to, _from) {
     for (var key in _from) {
       to[key] = _from[key];
@@ -252,6 +286,7 @@
   /**
    * Merge an Array of Objects into a single Object.
    */
+  // 将一个对象数组合并到一个单一对象中去。
   function toObject (arr) {
     var res = {};
     for (var i = 0; i < arr.length; i++) {
@@ -269,11 +304,13 @@
    * Stubbing args to make Flow happy without leaving useless transpiled code
    * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
    */
+  // 一个空函数。在这里插入的参数，是为了避免 Flow 使用 rest操作符(…) 产生无用的转换代码。
   function noop (a, b, c) {}
 
   /**
    * Always return false.
    */
+  // 总是返回false
   var no = function (a, b, c) { return false; };
 
   /* eslint-enable no-unused-vars */
@@ -281,11 +318,13 @@
   /**
    * Return the same value.
    */
+  // 返回自身
   var identity = function (_) { return _; };
 
   /**
    * Generate a string containing static keys from compiler modules.
    */
+  // 从编译器模块中生成一个静态的 键 字符串
   function genStaticKeys (modules) {
     return modules.reduce(function (keys, m) {
       return keys.concat(m.staticKeys || [])
@@ -296,6 +335,7 @@
    * Check if two values are loosely equal - that is,
    * if they are plain objects, do they have the same shape?
    */
+  // 判断两个值是否相等。是对象吗？结构相同吗？
   function looseEqual (a, b) {
     if (a === b) { return true }
     var isObjectA = isObject(a);
@@ -336,6 +376,7 @@
    * found in the array (if value is a plain object, the array must
    * contain an object of the same shape), or -1 if it is not present.
    */
+  // 返回一个元素在数组中的索引，-1表示没找到。方法很简单，就是上面looseEqual的一个使用场景。
   function looseIndexOf (arr, val) {
     for (var i = 0; i < arr.length; i++) {
       if (looseEqual(arr[i], val)) { return i }
@@ -346,6 +387,7 @@
   /**
    * Ensure a function is called only once.
    */
+  // 用闭包确保一个函数只执行一次。
   function once (fn) {
     var called = false;
     return function () {
