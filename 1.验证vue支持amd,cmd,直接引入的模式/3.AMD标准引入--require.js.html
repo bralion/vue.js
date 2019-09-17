@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>amd标准引入</title>
+</head>
+<body>
+<p>AMD是RequireJS在推广过程中对模块定义的规范化产出，它是一个概念，RequireJS是对这个概念的实现</p>
+<script src="./base/require.js"></script>
+<script>
+    require(['../vue.js'],function(Vue){
+    	
+    	//some code
+	    console.log(Vue);
+    })
+</script>
+</body>
+</html>

@@ -3,13 +3,16 @@
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
+/*
+*自调用函数，兼容amd cmd 模块化写法
+* 目的---->vue.js 既可以import也可以require 还可以全局直接script标签引入
+ */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Vue = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+		typeof define === 'function' && define.amd ? define(factory) :
+			(global.Vue = factory());
 }(this, function () { 'use strict';
-
-  /*  */
+  /* Vue构造函数  */
 
   var emptyObject = Object.freeze({});
 
