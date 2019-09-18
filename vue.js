@@ -398,6 +398,7 @@
     }
   }
 
+  //ssr标记属性
   var SSR_ATTR = 'data-server-rendered';
 
   var ASSET_TYPES = [
@@ -406,6 +407,7 @@
     'filter'
   ];
 
+  //生命周期 钩子
   var LIFECYCLE_HOOKS = [
     'beforeCreate',
     'created',
@@ -424,7 +426,9 @@
   /*  */
 
 
-
+ // Vue 实例配置
+	//里面的配置参数现在还不知道在后面的作用，后面再回来注释？
+	
   var config = ({
     /**
      * Option merge strategies (used in core/util/options)
@@ -434,11 +438,13 @@
 
     /**
      * Whether to suppress warnings.
+     * 控制警告是否禁止
      */
     silent: false,
 
     /**
      * Show production mode tip message on boot?
+     *
      */
     productionTip: "development" !== 'production',
 
@@ -530,6 +536,7 @@
 
   /**
    * Check if a string starts with $ or _
+   * 检测一个字符串是否是以$或者_开头
    */
   function isReserved (str) {
     var c = (str + '').charCodeAt(0);
@@ -570,7 +577,7 @@
 
   // can we use __proto__?
   var hasProto = '__proto__' in {};
-
+  //判断浏览器类型
   // Browser environment sniffing
   var inBrowser = typeof window !== 'undefined';
   var inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
@@ -604,6 +611,7 @@
 
   // this needs to be lazy-evaled because vue may be required before
   // vue-server-renderer can set VUE_ENV
+	// 判断是否是服务器环境
   var _isServer;
   var isServerRendering = function () {
     if (_isServer === undefined) {
@@ -710,6 +718,7 @@
       )
     };
 
+    //工具函数   重复字符串
     var repeat = function (str, n) {
       var res = '';
       while (n) {
@@ -719,7 +728,6 @@
       }
       return res
     };
-
     generateComponentTrace = function (vm) {
       if (vm._isVue && vm.$parent) {
         var tree = [];
